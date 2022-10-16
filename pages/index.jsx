@@ -1,10 +1,6 @@
-import { createClient } from "next-sanity";
 import { PortableText } from "@portabletext/react";
-
-const client = createClient({
-  projectId: "mw6d5mvk",
-  dataset: "production",
-});
+import Link from "next/link";
+import client from "../lib/sanity";
 
 export default function IndexPage({ animals }) {
   return (
@@ -18,7 +14,11 @@ export default function IndexPage({ animals }) {
           <ul>
             {animals.map((animal) => (
               <li key={animal._id}>
-                <dt>{animal?.name}</dt>
+                <dt>
+                  <Link href={`/animals/${animal.slug.current}`}>
+                    {animal?.name}
+                  </Link>
+                </dt>
                 <dd>
                   <PortableText value={animal?.myRichTextExample} />
                 </dd>
@@ -47,10 +47,7 @@ export default function IndexPage({ animals }) {
 }
 
 export async function getStaticProps() {
-  console.time("test");
   const animals = await client.fetch(`*[_type == "animal"]`);
-  console.timeEnd("test");
-
   return {
     props: {
       animals,
