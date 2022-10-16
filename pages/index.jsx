@@ -1,8 +1,9 @@
-import { createClient } from 'next-sanity';
+import { createClient } from "next-sanity";
+import { PortableText } from "@portabletext/react";
 
 const client = createClient({
-  projectId: 'mw6d5mvk',
-  dataset: 'production'
+  projectId: "mw6d5mvk",
+  dataset: "production",
 });
 
 export default function IndexPage({ animals }) {
@@ -16,7 +17,12 @@ export default function IndexPage({ animals }) {
         {animals.length > 0 && (
           <ul>
             {animals.map((animal) => (
-              <li key={animal._id}>{animal?.name}</li>
+              <li key={animal._id}>
+                <dt>{animal?.name}</dt>
+                <dd>
+                  <PortableText value={animal?.myRichTextExample} />
+                </dd>
+              </li>
             ))}
           </ul>
         )}
@@ -41,13 +47,13 @@ export default function IndexPage({ animals }) {
 }
 
 export async function getStaticProps() {
-  console.time('test');
+  console.time("test");
   const animals = await client.fetch(`*[_type == "animal"]`);
-  console.timeEnd('test');
+  console.timeEnd("test");
 
   return {
     props: {
-      animals
-    }
+      animals,
+    },
   };
 }
